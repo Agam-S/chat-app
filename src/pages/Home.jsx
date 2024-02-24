@@ -6,8 +6,12 @@ const Home = () => {
   return (
     <>
       <PinkButton />
-      <Button variant="pink">Hi</Button>
-      <h1>Home Page</h1>
+      {/* <Button variant="pink">Hi</Button> */}
+      <div style={{ textAlign: "center", marginTop: "10%" }}>
+        <h1>Welcome to this personal private DM app.</h1>
+        <h3>Please Search for a User to DM or Click on Chats</h3>
+        <h5>Made by Agam</h5>
+      </div>
     </>
   );
 };
