@@ -6,6 +6,7 @@ import Nav from "./components/Nav";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
 import Chat from "./pages/Chat";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route index element={<Home />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/login" element={<Login />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
