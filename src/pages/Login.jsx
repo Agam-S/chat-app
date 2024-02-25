@@ -1,11 +1,20 @@
 import React from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { useState } from "react";
 import { auth, provider } from "../config/firebase.config";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [emailIn, setEmailIn] = useState("");
+  const [passwordIn, setPasswordIn] = useState("");
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,6 +29,28 @@ const Login = () => {
       setError(error.message);
     }
     setLoading(false);
+  };
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const auth = getAuth();
+      const userIn = await signInWithEmailAndPassword(
+        auth,
+        emailIn,
+        passwordIn
+      );
+      console.log(userIn);
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
+
+  const signInWithGoogle = async () => {
+    const result = await signInWithPopup(auth, provider);
+    console.log(result);
   };
 
   return (
@@ -42,6 +73,28 @@ const Login = () => {
           Sign Up
         </button>
       </form>
+
+      <h1>Login</h1>
+      <form onSubmit={handleSignIn}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={emailIn}
+          onChange={(e) => setEmailIn(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={passwordIn}
+          onChange={(e) => setPasswordIn(e.target.value)}
+        />
+        <button disabled={loading} type="submit">
+          Login
+        </button>
+      </form>
+
+      <button onClick={signInWithGoogle}>Or Continue with Google...</button>
+
       {error && <p>{error}</p>}
     </div>
   );
