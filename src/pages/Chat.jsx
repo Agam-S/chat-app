@@ -19,7 +19,8 @@ import {
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import "./Chat.css";
-import { Placeholder } from "react-bootstrap";
+import { Button } from "react-bootstrap";
+import PinkButton from "../theme/PinkButton";
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -130,6 +131,7 @@ const Chat = () => {
 
   return (
     <>
+      <PinkButton />
       <div className="container">
         <div className="search-area">
           <h1>Chat Page</h1>
@@ -189,7 +191,9 @@ const Chat = () => {
                 }
               }}
             />
-            <button onClick={handleSendMessage}>Send</button>
+            <Button variant="pink" onClick={handleSendMessage}>
+              Send
+            </Button>
           </div>
         </div>
       </div>
