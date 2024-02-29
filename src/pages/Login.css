@@ -1,0 +1,28 @@
+.login-page {
+  text-align: center;
+  margin-top: 100px;
+}
+.button-nav {
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.button-nav button {
+  font-size: large;
+  padding: 10px;
+  margin: 10px;
+}
+
+.login-form,
+.signup-form {
+  padding: 20px;
+}
+.login-form input,
+button,
+.signup-form input,
+button {
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
