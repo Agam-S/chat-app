@@ -1,0 +1,99 @@
+.messages-container {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.message {
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 8px;
+}
+
+.sender-message {
+  background-color: #ffe6f2;
+  color: #ff66b2;
+}
+
+.recipient-message {
+  background-color: #ffffff;
+  color: #ff66b2;
+}
+
+input {
+  padding: 8px;
+  margin-right: 8px;
+  border: 1px solid #ff66b2;
+  border-radius: 4px;
+}
+
+button {
+  padding: 8px 16px;
+  background-color: #ff66b2;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff3385;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.search-area {
+  flex: 1;
+  padding: 16px;
+  background-color: #ffe6f2;
+}
+
+.dm-list {
+  flex: 1;
+  padding: 16px;
+  background-color: #ffffff;
+  border: #ff3385 solid thin;
+}
+
+.chat-area {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background-color: #ffffff;
+}
+
+.messages-container {
+  flex-grow: 1;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.input-container {
+  display: flex;
+  margin-top: 16px;
+}
+
+input {
+  flex-grow: 1;
+  padding: 8px;
+  margin-right: 8px;
+  border: 1px solid #ff66b2;
+  border-radius: 4px;
+}
+
+button {
+  padding: 8px 16px;
+  background-color: #ff66b2;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff3385;
+}

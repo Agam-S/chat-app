@@ -4,6 +4,7 @@ import {
   collection,
   getDocs,
   setDoc,
+  getDoc,
   serverTimestamp,
   doc,
 } from "firebase/firestore";
@@ -49,13 +50,23 @@ const SearchBar = () => {
     const auth = getAuth();
     const currentID = auth.currentUser.uid;
     try {
-      const conversationId = [uid, currentID].sort().join("_");
-      const convCollection = doc(db, "conversations", conversationId);
-      await setDoc(convCollection, {
-        participants: [uid, currentID],
-        timestamp: serverTimestamp(),
-      });
-      alert("Conversation started!");
+      const userDoc1 = await getDoc(doc(db, "users", uid));
+      const userDoc2 = await getDoc(doc(db, "users", currentID));
+
+      if (userDoc1.exists() && userDoc2.exists()) {
+        const displayName1 = userDoc1.data().displayName;
+        const displayName2 = userDoc2.data().displayName;
+
+        const conversationId = [uid, currentID].sort().join("_");
+        const convCollection = doc(db, "conversations", conversationId);
+        await setDoc(convCollection, {
+          participants: [uid, currentID],
+          displayNames: [displayName1, displayName2],
+          timestamp: serverTimestamp(),
+          id: conversationId,
+        });
+        alert("conversation added");
+      } else alert("User not found");
     } catch (error) {
       console.log(error.message);
     }

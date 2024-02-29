@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   getFirestore,
   doc,
@@ -10,39 +11,26 @@ import {
   collection,
   query,
   getDocs,
+  orderBy,
+  addDoc,
+  serverTimestamp,
+  onSnapshot,
 } from "firebase/firestore";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import "./Chat.css";
+import { Placeholder } from "react-bootstrap";
 
 const Chat = () => {
   const navigate = useNavigate();
-  // const { id } = useParams();
-  // const [user, setUser] = useState({});
-  const [dmList, setDmList] = useState();
-  const [message, setMessage] = useState("");
+  const { id } = useParams();
+  const [messages, setMessages] = useState([]);
+  const [messageInput, setMessageInput] = useState("");
 
-  // useEffect(() => {
-  //   const fetchDmData = async () => {
-  //     if (id !== undefined) {
-  //       try {
-  //         const db = getFirestore();
-  //         const userRef = doc(db, "conversations", id);
-  //         const userSnap = await getDoc(userRef);
-
-  //         if (userSnap.exists()) {
-  //           setDmList({ ...userSnap.data() });
-  //           console.log(dmList);
-  //         } else {
-  //           alert("DM not found");
-  //         }
-  //       } catch (error) {
-  //         alert("Error fetching user data:", error.message);
-  //       }
-  //     }
-  //   };
-
-  //   fetchDmData();
-  // }, [id]);
+  const [dmList, setDmList] = useState([]);
+  const [currentUserID, setCurrentID] = useState();
+  const auth = getAuth();
+  const currentUserId = auth.currentUser?.uid;
 
   useEffect(() => {
     const auth = getAuth();
@@ -51,7 +39,7 @@ const Chat = () => {
       try {
         if (user) {
           const currentID = user.uid;
-
+          setCurrentID(currentID);
           const db = getFirestore();
           const dmRef = collection(db, "conversations");
 
@@ -60,18 +48,20 @@ const Chat = () => {
             where("participants", "array-contains", currentID)
           );
 
-          const querySnapshot = await getDocs(q);
+          const unsubscribeDmList = onSnapshot(q, (querySnapshot) => {
+            if (!querySnapshot.empty) {
+              const dmListData = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+              }));
+              setDmList(dmListData);
+              console.log(dmListData);
+            } else {
+              alert("No DMs found");
+            }
+          });
 
-          if (!querySnapshot.empty) {
-            const dmListData = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            setDmList(dmListData);
-            console.log(dmListData);
-          } else {
-            alert("No DMs found");
-          }
+          return () => unsubscribeDmList();
         } else {
           console.log("User not authenticated");
           navigate("/login");
@@ -85,51 +75,123 @@ const Chat = () => {
     return () => unsubscribe();
   }, [setDmList]);
 
-  const handleChange = (event) => {
-    setMessage(event.target.value);
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const db = getFirestore();
+        const messagesRef = collection(db, "messages");
+        const q = query(
+          messagesRef,
+          where("conversationId", "==", id),
+          orderBy("timestamp")
+        );
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          const messagesData = querySnapshot.docs.map((doc) => doc.data());
+          setMessages(messagesData);
+        });
+
+        return () => unsubscribe();
+      } catch (error) {
+        console.error("Error fetching messages:", error.message);
+      }
+    };
+
+    fetchMessages();
+
+    return () => clearInterval();
+  }, [id]);
+
+  const handleSendMessage = async () => {
+    try {
+      const db = getFirestore();
+      const messagesRef = collection(db, "messages");
+      await addDoc(messagesRef, {
+        conversationId: id,
+        senderId: currentUserId,
+        text: messageInput,
+        timestamp: serverTimestamp(),
+      });
+      setMessageInput("");
+    } catch (error) {
+      console.error("Error sending message:", error.message);
+    }
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const getOtherParticipantDisplayName = (conversation, currentUserID) => {
+    const [participant1, participant2] = conversation.participants;
+    const [displayName1, displayName2] = conversation.displayNames;
 
-    console.log(`Sending message: ${message}`);
+    const otherParticipantDisplayName =
+      currentUserID === participant1 ? displayName2 : displayName1;
 
-    // save message in db
-    const db = getFirestore();
-    // const chatRef = doc(db, "chats");
-    // await setDoc(chatRef, {
-    //   chat: userName,
-    //   email: user.email,
-    //   uid: user.uid,
-    //   timestamp: serverTimestamp(),
-    // });
-
-    setMessage("");
+    return otherParticipantDisplayName;
   };
 
   return (
     <>
-      <h1>Chat Page</h1>
-      <p>Search for a user</p>
-      <SearchBar />
+      <div className="container">
+        <div className="search-area">
+          <h1>Chat Page</h1>
+          <p>Search for a user</p>
+          <SearchBar />
+        </div>
 
-      <div>
-        <h1>Your DM List</h1>
-      </div>
+        <div className="dm-list">
+          <h1>Your DM List</h1>
+          {dmList.map((conversation) => (
+            <div key={conversation.id}>
+              <p>
+                <Link to={`/chat/${conversation.id}`}>
+                  {getOtherParticipantDisplayName(conversation, currentUserID)}
+                </Link>
+              </p>
+            </div>
+          ))}
+        </div>
 
-      <div>
-        {/* <h1>Chatting with {user.displayName}</h1> */}
-        <p>Messages will go here</p>
-        {/* past messages */}
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={message}
-            onChange={handleChange}
-            placeholder="Type your message..."
-          />
-          <button type="submit">Send</button>
-        </form>
+        <div className="chat-area">
+          <h2>
+            Chatting with{" "}
+            {dmList.map((conversation) =>
+              conversation.id === id
+                ? getOtherParticipantDisplayName(conversation, currentUserID)
+                : null
+            )}
+          </h2>
+          <div className="messages-container">
+            {" "}
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`message ${
+                  message.senderId === currentUserId
+                    ? "sender-message"
+                    : "recipient-message"
+                }`}
+              >
+                <strong>
+                  {message.senderId === currentUserId ? "You" : "Other"}:
+                </strong>{" "}
+                {message.text}
+              </div>
+            ))}
+          </div>
+          <div className="input-container">
+            <input
+              type="text"
+              value={messageInput}
+              placeholder="Send a message..."
+              onChange={(e) => setMessageInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSendMessage();
+                }
+              }}
+            />
+            <button onClick={handleSendMessage}>Send</button>
+          </div>
+        </div>
       </div>
     </>
   );
