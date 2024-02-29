@@ -34,22 +34,6 @@ const Nav = () => {
     <>
       <h1 className="nav-title">Private Chat App</h1>
       <nav className="navbar">
-        <div className="search-bar">
-          <Form inline>
-            <Row>
-              <Col xs="auto">
-                <Form.Control
-                  type="text"
-                  placeholder="Search For A User..."
-                  className=" mr-sm-2"
-                />
-              </Col>
-              <Col xs="auto">
-                <Button type="submit">Submit</Button>
-              </Col>
-            </Row>
-          </Form>
-        </div>
         <ul className="nav-links">
           <li>
             <Link to="/">Home</Link>

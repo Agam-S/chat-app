@@ -2,17 +2,17 @@ import React from "react";
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  signInWithPopup,
   signInWithEmailAndPassword,
   updateProfile,
   onAuthStateChanged,
 } from "firebase/auth";
 import { useState, useEffect } from "react";
-import { auth, provider } from "../config/firebase.config";
+import { auth } from "../config/firebase.config";
 import PinkButton from "../theme/PinkButton";
 import { Button } from "react-bootstrap";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
+import { getFirestore, doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -65,6 +65,14 @@ const Login = () => {
         await updateProfile(user, {
           displayName: userName,
         });
+        const db = getFirestore();
+        const userRef = doc(db, "users", user.uid);
+        await setDoc(userRef, {
+          displayName: userName,
+          email: user.email,
+          uid: user.uid,
+          timestamp: serverTimestamp(),
+        });
         setError(`Account created for ${userName}`);
         console.log(user);
       }
@@ -91,16 +99,6 @@ const Login = () => {
       setError(error.message);
     }
     setLoading(false);
-  };
-
-  const signInWithGoogle = async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      console.log("Google Sign-In Successful", result);
-      navigate("/chat");
-    } catch (error) {
-      console.error("Google Sign-In Failed", error.message);
-    }
   };
 
   return (
@@ -164,9 +162,6 @@ const Login = () => {
           </form>
         </div>
       )}
-      <Button variant="pink" onClick={signInWithGoogle}>
-        Or Continue with Google...
-      </Button>
 
       {error && <p>{error}</p>}
     </div>
