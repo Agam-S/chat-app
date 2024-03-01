@@ -7,7 +7,6 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { useState, useEffect } from "react";
-import { auth } from "../config/firebase.config";
 import PinkButton from "../theme/PinkButton";
 import { Button } from "react-bootstrap";
 import "./Login.css";
@@ -74,7 +73,6 @@ const Login = () => {
           timestamp: serverTimestamp(),
         });
         setError(`Account created for ${userName}`);
-        console.log(user);
       }
     } catch (error) {
       setError(error.message);
@@ -92,7 +90,6 @@ const Login = () => {
         emailIn,
         passwordIn
       );
-      console.log(userIn);
       setError(`Logged In As ${userIn.user.displayName}`);
       navigate("/chat");
     } catch (error) {

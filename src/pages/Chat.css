@@ -30,6 +30,8 @@ input {
   display: flex;
   justify-content: space-between;
   height: 100vh;
+  margin-bottom: 100px;
+  margin-top: 50px;
 }
 
 .search-area {
@@ -57,12 +59,13 @@ input {
 .messages-container {
   flex-grow: 1;
   max-height: 60vh;
+  min-height: 100px;
   overflow-y: auto;
 }
 
 .input-container {
   display: flex;
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
 input {
@@ -89,4 +92,22 @@ button:hover {
 .search-area ul {
   list-style-type: none;
   padding: 0;
+}
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .chat-area {
+    flex: 1;
+  }
+
+  .dm-list {
+    flex: 1;
+  }
+}
+
+a {
+  color: #ff3385 !important;
+  text-decoration: none;
 }

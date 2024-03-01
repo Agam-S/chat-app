@@ -1,10 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Nav.css";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import { signOut, getAuth, onAuthStateChanged } from "firebase/auth";
 import { useState, useEffect } from "react";
 
@@ -38,15 +34,9 @@ const Nav = () => {
           <li>
             <Link to="/">Home</Link>
           </li>
-          <li>
-            <Link to="/chat">Chat</Link>
-          </li>
-          <li>
-            <Link to="/Contact">Contact Us</Link>
-          </li>
           {showLogin ? (
             <li>
-              <Link to="/profile">Profile</Link>
+              <Link to="/chat">Chat</Link>
             </li>
           ) : (
             <li>

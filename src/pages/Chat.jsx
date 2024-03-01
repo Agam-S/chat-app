@@ -1,26 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SearchBar from "../components/SearchBar";
 import { useNavigate, Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import {
   getFirestore,
-  doc,
-  getDoc,
-  setDoc,
   where,
   collection,
   query,
-  getDocs,
   orderBy,
   addDoc,
   serverTimestamp,
   onSnapshot,
 } from "firebase/firestore";
-
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import "./Chat.css";
 import { Button } from "react-bootstrap";
 import PinkButton from "../theme/PinkButton";
+import { auth } from "../config/firebase.config";
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -32,10 +28,10 @@ const Chat = () => {
   const [currentUserID, setCurrentID] = useState();
   const auth = getAuth();
   const currentUserId = auth.currentUser?.uid;
+  const chatAreaRef = useRef(null);
 
   useEffect(() => {
     const auth = getAuth();
-
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
         if (user) {
@@ -56,7 +52,6 @@ const Chat = () => {
                 ...doc.data(),
               }));
               setDmList(dmListData);
-              console.log(dmListData);
             } else {
               alert("No DMs found");
             }
@@ -129,6 +124,10 @@ const Chat = () => {
     return otherParticipantDisplayName;
   };
 
+  useEffect(() => {
+    chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+  }, [id, messages]);
+
   return (
     <>
       <PinkButton />
@@ -161,7 +160,7 @@ const Chat = () => {
                 : null
             )}
           </h2>
-          <div className="messages-container">
+          <div className="messages-container" ref={chatAreaRef}>
             {" "}
             {messages.map((message) => (
               <div

@@ -3,24 +3,14 @@
   padding: 1rem;
   font-size: xx-large;
 }
+
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   background-color: #ffffff;
   padding: 10px;
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-}
-.search-bar button {
-  padding: 8px 12px;
-  background-color: #d92b8b;
-  color: white;
-  border: none;
-  cursor: pointer;
+  border: #ccc thin solid;
 }
 
 .nav-links {
@@ -31,13 +21,12 @@
 }
 
 .nav-links li {
-  margin-left: 10px;
+  margin-left: 20px;
 }
 
 .nav-links li a {
   background-color: white;
-  padding: 10px 15px;
-  color: #333;
+  padding: 5px;
   text-decoration: none;
 }
 
@@ -53,10 +42,13 @@
 
   .nav-links {
     flex-direction: column;
+    align-items: center;
   }
 
   .nav-links li {
     margin-left: 0;
     margin-bottom: 5px;
+    width: 100%;
+    text-align: center;
   }
 }
