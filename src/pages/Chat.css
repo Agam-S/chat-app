@@ -1,22 +1,28 @@
 .messages-container {
-  max-height: 300px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .message {
-  padding: 8px;
-  margin: 8px 0;
+  padding: 10px;
+  margin: 6px;
   border-radius: 8px;
+  max-width: 70%;
 }
 
 .sender-message {
   background-color: #ffe6f2;
   color: #ff66b2;
+  text-align: right;
+  align-self: flex-end;
+  border: 1px solid #ccc;
 }
 
 .recipient-message {
-  background-color: #ffffff;
+  background-color: #f0f0f0;
   color: #ff66b2;
+  align-self: flex-start;
+  border: 1px solid #ccc;
 }
 
 input {
@@ -29,7 +35,7 @@ input {
 .container {
   display: flex;
   justify-content: space-between;
-  height: 100vh;
+  height: 70vh;
   margin-bottom: 100px;
   margin-top: 50px;
 }
@@ -38,6 +44,8 @@ input {
   flex: 1;
   padding: 16px;
   background-color: #ffe6f2;
+  min-height: 30vh;
+  overflow-y: auto;
 }
 
 .dm-list {
@@ -45,6 +53,8 @@ input {
   padding: 16px;
   background-color: #ffffff;
   border: #ff3385 solid thin;
+  overflow-y: auto;
+  min-height: 50vh;
 }
 
 .chat-area {
@@ -61,11 +71,13 @@ input {
   max-height: 60vh;
   min-height: 100px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .input-container {
   display: flex;
   margin-top: 20px;
+  gap: 10px;
 }
 
 input {
@@ -110,4 +122,8 @@ button:hover {
 a {
   color: #ff3385 !important;
   text-decoration: none;
+}
+.time {
+  font-size: 12px;
+  color: #ff66b2;
 }

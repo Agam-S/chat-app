@@ -71,6 +71,20 @@ const Chat = () => {
     return () => unsubscribe();
   }, [setDmList]);
 
+  const convertTimestampToDate = (timestampInSeconds) => {
+    const timestampInMilliseconds = timestampInSeconds * 1000;
+    const date = new Date(timestampInMilliseconds);
+
+    const options = {
+      hour: "numeric",
+      minute: "numeric",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return date.toLocaleString("en-US", options);
+  };
+
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -83,7 +97,17 @@ const Chat = () => {
         );
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
-          const messagesData = querySnapshot.docs.map((doc) => doc.data());
+          const messagesData = querySnapshot.docs.map((doc) => {
+            const data = doc.data();
+            const timestampInSeconds =
+              data.timestamp && typeof data.timestamp === "object"
+                ? data.timestamp.seconds || 0
+                : 0;
+            return {
+              ...data,
+              formattedDate: convertTimestampToDate(timestampInSeconds),
+            };
+          });
           setMessages(messagesData);
         });
 
@@ -95,7 +119,7 @@ const Chat = () => {
 
     fetchMessages();
 
-    return () => clearInterval();
+    return () => {};
   }, [id]);
 
   const handleSendMessage = async () => {
@@ -114,11 +138,12 @@ const Chat = () => {
     }
   };
 
+  let otherParticipantDisplayName = "";
   const getOtherParticipantDisplayName = (conversation, currentUserID) => {
     const [participant1, participant2] = conversation.participants;
     const [displayName1, displayName2] = conversation.displayNames;
 
-    const otherParticipantDisplayName =
+    otherParticipantDisplayName =
       currentUserID === participant1 ? displayName2 : displayName1;
 
     return otherParticipantDisplayName;
@@ -134,7 +159,7 @@ const Chat = () => {
       <div className="container">
         <div className="search-area">
           <h1>Chat Page</h1>
-          <p>Search for a user</p>
+          <p>Add a user</p>
           <SearchBar />
         </div>
 
@@ -172,9 +197,14 @@ const Chat = () => {
                 }`}
               >
                 <strong>
-                  {message.senderId === currentUserId ? "You" : "Other"}:
-                </strong>{" "}
+                  {message.senderId === currentUserId
+                    ? "You"
+                    : otherParticipantDisplayName}
+                </strong>
+                <br />
                 {message.text}
+                <br />
+                <div className="time">{message.formattedDate}</div>
               </div>
             ))}
           </div>

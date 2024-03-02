@@ -81,14 +81,18 @@ const SearchBar = () => {
         onChange={handleSearch}
       />
       <ul className="list">
-        {filteredUsernames.map((user, index) => (
-          <li key={index}>
-            <Link onClick={() => userListClick(user.uid)}>
-              {user.displayName}
-              <br />
-            </Link>
-          </li>
-        ))}
+        {filteredUsernames.length === 0 && searchTerm.trim() !== "" ? (
+          <p>No users found...</p>
+        ) : (
+          filteredUsernames.map((user, index) => (
+            <li key={index}>
+              <Link onClick={() => userListClick(user.uid)}>
+                {user.displayName}
+                <br />
+              </Link>
+            </li>
+          ))
+        )}
       </ul>
     </div>
   );
