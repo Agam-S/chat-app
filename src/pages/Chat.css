@@ -54,7 +54,7 @@ input {
   background-color: #ffffff;
   border: #ff3385 solid thin;
   overflow-y: auto;
-  min-height: 50vh;
+  min-height: 35vh;
 }
 
 .chat-area {
