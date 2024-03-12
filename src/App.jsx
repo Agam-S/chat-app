@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
 import Chat from "./pages/Chat";
+import Chatting from "./pages/Chatting";
 import Login from "./pages/Login";
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route index element={<Home />} />
           <Route path="/chat" element={<Chat />} />
-          <Route path="/chat/:id" element={<Chat />} />
+          <Route path="/chat/:id" element={<Chatting />} />
           <Route path="/login" element={<Login />} />
 
           <Route path="*" element={<NotFound />} />
